@@ -21,3 +21,4 @@ slog = "~2.0"
 [dev-dependencies]
 slog-async = "~2"
 slog-json = "~2"
+version-sync = "~0.5"

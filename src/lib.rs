@@ -1,3 +1,6 @@
+#![doc(html_root_url = "https://docs.rs/slog-retry/0.1.0/slog-retry/")]
+#![warn(missing_docs)]
+
 //! A slog adapter for retrying on errors.
 //!
 //! The [slog](https://crates.io/crates/slog) infrastructure is very powerful and can be bent to
