@@ -238,7 +238,10 @@ where
                 }),
                 Ok(()) => match borrowed.as_ref().unwrap().log(record, values) {
                     Ok(ok) => return Ok(ok),
-                    Err(err) => slave_err = Some(err),
+                    Err(err) => {
+                        slave_err = Some(err);
+                        borrowed.take();
+                    },
                 },
             }
         }
