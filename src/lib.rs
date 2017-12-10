@@ -29,11 +29,11 @@
 //! extern crate slog_async;
 //! extern crate slog_json;
 //! extern crate slog_retry;
-//!
+//! 
 //! use std::net::TcpStream;
-//!
+//! 
 //! use slog::Drain;
-//!
+//! 
 //! fn main() {
 //!     let retry = slog_retry::Retry::new(|| -> Result<_, std::io::Error> {
 //!             let connection = TcpStream::connect("127.0.0.1:1234")?;
@@ -60,7 +60,7 @@ use std::thread;
 use std::time::Duration;
 
 use failure::Fail;
-use slog::{Drain, Record, OwnedKVList};
+use slog::{Drain, OwnedKVList, Record};
 
 /// An error when the retry adaptor fails.
 ///
@@ -104,7 +104,11 @@ where
             .as_ref()
             .map(|s| format!("{}", s))
             .unwrap_or_else(|| "()".to_owned());
-        write!(fmt, "Failed to reconnect the logging drain: {}/{}", factory, slave)
+        write!(
+            fmt,
+            "Failed to reconnect the logging drain: {}/{}",
+            factory, slave
+        )
     }
 }
 
@@ -167,9 +171,11 @@ where
     ///   block (it uses the reconnect strategy provided) and it may return an error. If set to
     ///   `false`, the connection is made on the first logged message. No matter if connecting now
     ///   or later, the first connection attempt is without waiting.
-    pub fn new(factory: Factory, strategy: Option<NewStrategy>, connect_now: bool)
-        -> Result<Self, Error<FactoryError, Slave::Err>>
-    {
+    pub fn new(
+        factory: Factory,
+        strategy: Option<NewStrategy>,
+        connect_now: bool,
+    ) -> Result<Self, Error<FactoryError, Slave::Err>> {
         let result = Self {
             slave: RefCell::new(None),
             factory,
@@ -177,14 +183,22 @@ where
             initialized: Cell::new(false),
         };
         if connect_now {
-            result.init(&mut result.slave.borrow_mut(), &mut (result.strategy)())
-                .map_err(|factory| Error { factory, slave: None })?;
+            result
+                .init(&mut result.slave.borrow_mut(), &mut (result.strategy)())
+                .map_err(|factory| {
+                    Error {
+                        factory,
+                        slave: None,
+                    }
+                })?;
         }
         Ok(result)
     }
-    fn init(&self, slave: &mut RefMut<Option<Slave>>, strategy: &mut Strategy)
-        -> Result<(), Option<FactoryError>>
-    {
+    fn init(
+        &self,
+        slave: &mut RefMut<Option<Slave>>,
+        strategy: &mut Strategy,
+    ) -> Result<(), Option<FactoryError>> {
         let prefix: Strategy = if self.initialized.get() {
             Box::new(iter::empty())
         } else {
@@ -232,10 +246,11 @@ where
         let mut strategy = (self.strategy)();
         loop {
             match self.init(&mut borrowed, &mut strategy) {
-                Err(factory) => return Err(Error {
-                    factory,
-                    slave: slave_err,
-                }),
+                Err(factory) =>
+                    return Err(Error {
+                        factory,
+                        slave: slave_err,
+                    }),
                 Ok(()) => match borrowed.as_ref().unwrap().log(record, values) {
                     Ok(ok) => return Ok(ok),
                     Err(err) => {
@@ -249,7 +264,6 @@ where
 }
 
 fn default_new_strategy() -> Strategy {
-    let iterator = (1..5)
-        .map(Duration::from_secs);
+    let iterator = (1..5).map(Duration::from_secs);
     Box::new(iterator)
 }

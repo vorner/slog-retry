@@ -25,11 +25,13 @@ fn main() {
         .unwrap()
         // Ignore if it isn't possible to log some of the messages, we'll try again
         .ignore_res();
-    let async = slog_async::Async::default(retry)
-        .fuse();
-    let root = slog::Logger::root(async, o!(
-        "version" => env!("CARGO_PKG_VERSION"),
-        "application" => env!("CARGO_PKG_NAME"),
-    ));
+    let async = slog_async::Async::default(retry).fuse();
+    let root = slog::Logger::root(
+        async,
+        o!(
+            "version" => env!("CARGO_PKG_VERSION"),
+            "application" => env!("CARGO_PKG_NAME"),
+        ),
+    );
     info!(root, "Everything is set up");
 }

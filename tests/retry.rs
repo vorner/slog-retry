@@ -11,10 +11,10 @@ extern crate slog_retry;
 
 use std::iter;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 use std::thread;
+use std::time::Duration;
 
-use slog::{Drain, Logger, Record, OwnedKVList};
+use slog::{Drain, Logger, OwnedKVList, Record};
 use slog_retry::{NewStrategy, Retry};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -31,19 +31,15 @@ use Part::*;
 impl Action {
     fn part(&self) -> Part {
         match *self {
-            FactoryError |
-            FactorySuccess => Factory,
-            LogError |
-            LogSuccess => Log,
+            FactoryError | FactorySuccess => Factory,
+            LogError | LogSuccess => Log,
         }
     }
 
     fn result(&self) -> Result<(), ()> {
         match *self {
-            FactoryError |
-            LogError => Err(()),
-            FactorySuccess |
-            LogSuccess => Ok(()),
+            FactoryError | LogError => Err(()),
+            FactorySuccess | LogSuccess => Ok(()),
         }
     }
 }
@@ -74,11 +70,10 @@ impl Scenario {
         })
     }
     fn take_action(&self, part: Part) -> Action {
-        let next_action = self.actions
-            .lock()
-            .unwrap()
-            .pop()
-            .expect(&format!("No more actions are expected, but {:?} asked for one", part));
+        let next_action = self.actions.lock().unwrap().pop().expect(&format!(
+            "No more actions are expected, but {:?} asked for one",
+            part
+        ));
         assert_eq!(part, next_action.part());
         next_action
     }
@@ -89,8 +84,10 @@ impl Drop for Scenario {
         // Don't double-panic. This is OK, if we are already panicking, the test will fail anyway
         // (and will likely not have exhausted all the actions due to that).
         if !thread::panicking() {
-            assert!(self.actions.lock().unwrap().is_empty(),
-                    "Test didn't take all expected actions");
+            assert!(
+                self.actions.lock().unwrap().is_empty(),
+                "Test didn't take all expected actions"
+            );
         }
     }
 }
@@ -105,18 +102,13 @@ impl Drain for FailLogger {
     type Ok = ();
     type Err = LoggerError;
     fn log(&self, _: &Record, _: &OwnedKVList) -> Result<(), LoggerError> {
-        self.0
-            .take_action(Log)
-            .result()
-            .map_err(|()| LoggerError)
+        self.0.take_action(Log).result().map_err(|()| LoggerError)
     }
 }
 
 fn strategy(len: usize) -> Option<NewStrategy> {
     Some(Box::new(move || {
-        let iter = iter::repeat(0)
-            .map(Duration::from_secs)
-            .take(len);
+        let iter = iter::repeat(0).map(Duration::from_secs).take(len);
         Box::new(iter)
     }))
 }
@@ -126,7 +118,8 @@ fn strategy(len: usize) -> Option<NewStrategy> {
 struct CreateError;
 
 fn factory(scenario: &Arc<Scenario>) -> Result<FailLogger, CreateError> {
-    scenario.take_action(Factory)
+    scenario
+        .take_action(Factory)
         .result()
         .map_err(|()| CreateError)
         .map(|()| FailLogger(Arc::clone(scenario)))
