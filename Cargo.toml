@@ -7,7 +7,7 @@ description = "slog Drain that reconnects on errors and tries again"
 documentation = "https://docs.rs/slog-drain"
 readme = "README.md"
 keywords = ["logging", "slog", "retry"]
-categories = ["Development tools::Debugging"]
+categories = ["development-tools::debugging"]
 license = "Apache-2.0/MIT"
 
 [badges]
