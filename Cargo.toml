@@ -1,10 +1,10 @@
 [package]
 name = "slog-retry"
 # Also increase the version in src/lib html root attribute
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Michal 'vorner' Vaner <vorner@vorner.cz>"]
 description = "slog Drain that reconnects on errors and tries again"
-documentation = "https://docs.rs/slog-drain"
+documentation = "https://docs.rs/slog-retry"
 readme = "README.md"
 keywords = ["logging", "slog", "retry"]
 categories = ["development-tools::debugging"]
@@ -15,10 +15,10 @@ travis-ci = { repository = "vorner/slog-retry" }
 appveyor = { repository = "vorner/slog-retry" }
 
 [dependencies]
-failure = "~0.1.1"
-slog = "~2.0"
+failure = "0.1.1"
+slog = "2.0"
 
 [dev-dependencies]
-slog-async = "~2"
-slog-json = "~2"
+slog-async = "2.3"
+slog-json = "2.2"
 version-sync = "~0.5"
