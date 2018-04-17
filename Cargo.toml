@@ -5,6 +5,7 @@ version = "0.1.1"
 authors = ["Michal 'vorner' Vaner <vorner@vorner.cz>"]
 description = "slog Drain that reconnects on errors and tries again"
 documentation = "https://docs.rs/slog-retry"
+repository = "https://github.com/vorner/slog-retry"
 readme = "README.md"
 keywords = ["logging", "slog", "retry"]
 categories = ["development-tools::debugging"]
