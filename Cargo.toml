@@ -12,6 +12,7 @@ categories = ["development-tools::debugging"]
 license = "Apache-2.0/MIT"
 
 [badges]
+maintenance = { status = "passively-maintained" }
 travis-ci = { repository = "vorner/slog-retry" }
 appveyor = { repository = "vorner/slog-retry" }
 
