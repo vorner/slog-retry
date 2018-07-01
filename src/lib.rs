@@ -1,4 +1,7 @@
-#![doc(html_root_url = "https://docs.rs/slog-retry/0.1.0/slog-retry/")]
+#![doc(
+    html_root_url = "https://docs.rs/slog-retry/0.1.0/slog-retry/",
+    test(attr(deny(warnings))),
+)]
 #![warn(missing_docs)]
 
 //! A slog adapter for retrying on errors.
