@@ -1,5 +1,5 @@
 #![doc(
-    html_root_url = "https://docs.rs/slog-retry/0.1.0/slog-retry/",
+    html_root_url = "https://docs.rs/slog-retry/0.1.1/slog-retry/",
     test(attr(deny(warnings))),
 )]
 #![warn(missing_docs)]
